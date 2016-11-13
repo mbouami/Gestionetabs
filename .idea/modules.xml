@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GestionEtabs.iml" filepath="$PROJECT_DIR$/GestionEtabs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Gestionetabs.iml" filepath="$PROJECT_DIR$/Gestionetabs.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

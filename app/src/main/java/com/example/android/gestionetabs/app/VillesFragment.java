@@ -107,11 +107,10 @@ public class VillesFragment extends Fragment {
             final String OWM_CP= "cp";
             JSONObject villeJson = new JSONObject(villeJsonStr);
             JSONArray villeArray = villeJson.getJSONArray(OWM_DEPART);
-            String[] resultStrs = null;
+            String[] resultStrs = new String[villeArray.length()];
             for(int i = 0; i < villeArray.length(); i++) {
                 JSONObject laville = villeArray.getJSONObject(i);
-//                resultStrs[i] = laville.getString(OWM_NOM);
-                Log.v(LOG_TAG, "laville entry: " + laville.toString());
+                resultStrs[i] = laville.getString(OWM_ID)+"---"+ laville.getString(OWM_NOM);
             }
 //            for (String s : resultStrs) {
 //                Log.v(LOG_TAG, "ville entry: " + s);
@@ -167,7 +166,7 @@ public class VillesFragment extends Fragment {
                     return null;
                 }
                 villesJsonStr = buffer.toString();
-                Log.v(LOG_TAG, "villesJsonStr string: " + villesJsonStr);
+//                Log.v(LOG_TAG, "villesJsonStr string: " + villesJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -192,6 +191,16 @@ public class VillesFragment extends Fragment {
                 e.printStackTrace();
             }
             return null;
+        }
+        @Override
+        protected void onPostExecute(String[] result) {
+            if (result != null) {
+                mVillesAdapter.clear();
+                for(String villeStr : result) {
+                    mVillesAdapter.add(villeStr);
+                }
+                // New data is back from the server.  Hooray!
+            }
         }
     }
 }
