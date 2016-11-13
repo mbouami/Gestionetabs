@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -24,10 +25,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mbouami on 12/11/2016.
@@ -35,8 +39,10 @@ import java.util.List;
 
 public class VillesFragment extends Fragment {
 
-    ArrayAdapter<String> mVillesAdapter;
-
+//    ArrayAdapter<String> mVillesAdapter;
+    SimpleAdapter mVillesAdapter;
+    ListView listView = null;
+    JSONParserDonnees listevilles = new JSONParserDonnees();
     public VillesFragment() {
 
     }
@@ -79,23 +85,59 @@ public class VillesFragment extends Fragment {
                 "Thurs 6/26 - Rainy - 18/11",
                 "Fri 6/27 - Foggy - 21/10",
                 "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                "Sun 6/29 - Sunny - 20/7"
+                "Sun 6/29 - Sunny - 20/7",
+                "test - test"
         };
-        List<String> listeVilles = new ArrayList<String>(Arrays.asList(data));
-        mVillesAdapter =
-                new ArrayAdapter<String>(
-                        getActivity(), // The current context (this activity)
-                        R.layout.list_item_villes, // The name of the layout ID.
-                        R.id.list_item_ville_textview, // The ID of the textview to populate.
-                        listeVilles);
+        ArrayList<Map<String, String>> listeVilles = new ArrayList<Map<String, String>>();
+        for(int j = 0; j < data.length; j++) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("id", Integer.toString(j));
+            map.put("nom", data[j]);
+            listeVilles.add(map);
+        }
+//        try {
+//            String baseUrl = "http://www.bouami.fr/gestionetabs/web/listevilles/";
+//            URL url = new URL(baseUrl.concat("77"));
+//            JSONParserDonnees lesdonnees = new JSONParserDonnees();
+//            try {
+//                String listedonnees = lesdonnees.parse(url,"GET");
+//                mVillesAdapter = new SimpleAdapter(getActivity(),
+//                                                    lesdonnees.getVilleDataFromJson(listedonnees),
+//                                                    R.layout.list_item_villes, new String[] { "id", "nom" },
+//                                                    new int[] { R.id.id, R.id.nom });
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        String villesJsonStr = null;
+//        try {
+//            final String QUERY_DEPART = "77";
+//            String baseUrl = "http://www.bouami.fr/gestionetabs/web/listevilles/";
+//            URL url = new URL(baseUrl.concat(QUERY_DEPART));
+//            villesJsonStr = listevilles.parse(url,"GET");
+//        } catch (IOException e) {
+//            return null;
+//        }
+//        try {
+//            mVillesAdapter = new SimpleAdapter(getActivity(),listevilles.getVilleDataFromJson(villesJsonStr), R.layout.list_item_villes, new String[] { "id", "nom" },new int[] { R.id.id, R.id.nom });
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        mVillesAdapter = new SimpleAdapter(getActivity(),listeVilles, R.layout.list_item_villes, new String[] { "id", "nom" },new int[] { R.id.id, R.id.nom });
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_ville);
+        listView = (ListView) rootView.findViewById(R.id.listview_ville);
         listView.setAdapter(mVillesAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String villecast = mVillesAdapter.getItem(position);
+                Map<String, String> item = (Map<String, String>) mVillesAdapter.getItem(position);
+                String villecast = item.get("id");
                 Toast.makeText(getActivity(), villecast, Toast.LENGTH_SHORT).show();
             }
         });
@@ -103,42 +145,40 @@ public class VillesFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchVillesTask extends AsyncTask<String, Void, String[]> {
+    public ArrayList<Map<String, String>> getVilleDataFromJson(String villeJsonStr) throws JSONException {
 
-        private final String LOG_TAG = FetchVillesTask.class.getSimpleName();
-
-        private String[] getVilleDataFromJson(String villeJsonStr) throws JSONException {
-
-            final String OWM_DEPART = "93";
-            final String OWM_ID= "id";
-            final String OWM_NOM= "nom";
-            final String OWM_DISTRICT= "district";
-            final String OWM_CP= "cp";
-            JSONObject villeJson = new JSONObject(villeJsonStr);
-            JSONArray villeArray = villeJson.getJSONArray(OWM_DEPART);
-            String[] resultStrs = new String[villeArray.length()];
-            for(int i = 0; i < villeArray.length(); i++) {
-                JSONObject laville = villeArray.getJSONObject(i);
-                resultStrs[i] = laville.getString(OWM_ID)+"---"+ laville.getString(OWM_NOM);
-            }
+        final String OWM_DEPART = "93";
+        final String OWM_ID= "id";
+        final String OWM_NOM= "nom";
+        final String OWM_DISTRICT= "district";
+        final String OWM_CP= "cp";
+        JSONObject villeJson = new JSONObject(villeJsonStr);
+        JSONArray villeArray = villeJson.getJSONArray(OWM_DEPART);
+//            String[] resultStrs = new String[villeArray.length()];
+        ArrayList<Map<String, String>> resultStrs = new ArrayList<Map<String, String>>();
+        for(int i = 0; i < villeArray.length(); i++) {
+            JSONObject laville = villeArray.getJSONObject(i);
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("id", laville.getString(OWM_ID));
+            map.put("nom", laville.getString(OWM_NOM));
+            resultStrs.add(map);
+        }
 //            for (String s : resultStrs) {
 //                Log.v(LOG_TAG, "ville entry: " + s);
 //            }
-            return resultStrs;
-        }
+        return resultStrs;
+    }
+
+    public class FetchVillesTask extends AsyncTask<String, Void, ArrayList<Map<String, String>>> {
+
+        private final String LOG_TAG = FetchVillesTask.class.getSimpleName();
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected ArrayList<Map<String, String>> doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
             }
-
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            // Will contain the raw JSON response as a string.
             String villesJsonStr = null;
-
             try {
 //                String baseUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7";
 //                String apiKey = "&APPID=" + BuildConfig.OPEN_WEATHER_MAP_API_KEY;
@@ -146,55 +186,13 @@ public class VillesFragment extends Fragment {
                 final String QUERY_DEPART = params[0].toString();
                 String baseUrl = "http://www.bouami.fr/gestionetabs/web/listevilles/";
                 URL url = new URL(baseUrl.concat(QUERY_DEPART));
-//                Log.v(LOG_TAG, "Built URI " + url.toString());
-//                ChargerDonnees lesdonnees =  new ChargerDonnees(baseUrl,"GET",null);
-                // Create the request to OpenWeatherMap, and open the connection
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                // Read the input stream into a String
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    // Nothing to do.
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    return null;
-                }
-                villesJsonStr = buffer.toString();
-//                Log.v(LOG_TAG, "villesJsonStr string: " + villesJsonStr);
+                villesJsonStr = listevilles.parse(url,"GET");
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attemping
-                // to parse it.
                 return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
             }
             try {
-                return getVilleDataFromJson(villesJsonStr);
+                return listevilles.getVilleDataFromJson(villesJsonStr);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
@@ -202,13 +200,10 @@ public class VillesFragment extends Fragment {
             return null;
         }
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(ArrayList<Map<String, String>> result) {
             if (result != null) {
-                mVillesAdapter.clear();
-                for(String villeStr : result) {
-                    mVillesAdapter.add(villeStr);
-                }
-                // New data is back from the server.  Hooray!
+                mVillesAdapter = new SimpleAdapter(getActivity(),result, R.layout.list_item_villes, new String[] { "id", "nom" },new int[] { R.id.id, R.id.nom });
+                listView.setAdapter(mVillesAdapter);
             }
         }
     }
