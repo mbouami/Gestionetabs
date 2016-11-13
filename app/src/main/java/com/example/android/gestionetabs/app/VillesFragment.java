@@ -10,8 +10,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,6 +92,13 @@ public class VillesFragment extends Fragment {
         // Get a reference to the ListView, and attach this adapter to it.
         ListView listView = (ListView) rootView.findViewById(R.id.listview_ville);
         listView.setAdapter(mVillesAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String villecast = mVillesAdapter.getItem(position);
+                Toast.makeText(getActivity(), villecast, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return rootView;
     }
@@ -137,7 +146,7 @@ public class VillesFragment extends Fragment {
                 final String QUERY_DEPART = params[0].toString();
                 String baseUrl = "http://www.bouami.fr/gestionetabs/web/listevilles/";
                 URL url = new URL(baseUrl.concat(QUERY_DEPART));
-                Log.v(LOG_TAG, "Built URI " + url.toString());
+//                Log.v(LOG_TAG, "Built URI " + url.toString());
 //                ChargerDonnees lesdonnees =  new ChargerDonnees(baseUrl,"GET",null);
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
