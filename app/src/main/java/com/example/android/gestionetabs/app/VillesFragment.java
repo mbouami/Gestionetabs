@@ -1,7 +1,9 @@
 package com.example.android.gestionetabs.app;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,6 +69,9 @@ public class VillesFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             FetchVillesTask villeTask = new FetchVillesTask();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String location = prefs.getString(getString(R.string.pref_location_key),
+                    getString(R.string.pref_location_default));
             villeTask.execute("93");
             return true;
         }
