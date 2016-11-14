@@ -21,7 +21,7 @@
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.gestionetabs.app.MainActivity" />
+                android:value="MainActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -29,7 +29,7 @@
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.gestionetabs.app.MainActivity" />
+                android:value="MainActivity" />
         </activity>
     </application>
 

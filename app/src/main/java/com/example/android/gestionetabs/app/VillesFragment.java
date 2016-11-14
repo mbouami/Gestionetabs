@@ -1,5 +1,6 @@
 package com.example.android.gestionetabs.app;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -22,17 +22,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,11 +61,13 @@ public class VillesFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchVillesTask villeTask = new FetchVillesTask();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String location = prefs.getString(getString(R.string.pref_location_key),
-                    getString(R.string.pref_location_default));
-            villeTask.execute("93");
+//            FetchVillesTask villeTask = new FetchVillesTask();
+//            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//            String depart = prefs.getString(getString(R.string.pref_depart_key),
+//                    getString(R.string.pref_depart_default));
+//            Toast.makeText(getActivity(), depart, Toast.LENGTH_SHORT).show();
+//            villeTask.execute(depart);
+            updateVille();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -143,36 +138,53 @@ public class VillesFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Map<String, String> item = (Map<String, String>) mVillesAdapter.getItem(position);
                 String villecast = item.get("id");
-                Toast.makeText(getActivity(), villecast, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), villecast, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), EtabActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, villecast);
+                startActivity(intent);
             }
         });
 
         return rootView;
     }
 
-    public ArrayList<Map<String, String>> getVilleDataFromJson(String villeJsonStr) throws JSONException {
-
-        final String OWM_DEPART = "93";
-        final String OWM_ID= "id";
-        final String OWM_NOM= "nom";
-        final String OWM_DISTRICT= "district";
-        final String OWM_CP= "cp";
-        JSONObject villeJson = new JSONObject(villeJsonStr);
-        JSONArray villeArray = villeJson.getJSONArray(OWM_DEPART);
-//            String[] resultStrs = new String[villeArray.length()];
-        ArrayList<Map<String, String>> resultStrs = new ArrayList<Map<String, String>>();
-        for(int i = 0; i < villeArray.length(); i++) {
-            JSONObject laville = villeArray.getJSONObject(i);
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put("id", laville.getString(OWM_ID));
-            map.put("nom", laville.getString(OWM_NOM));
-            resultStrs.add(map);
-        }
-//            for (String s : resultStrs) {
-//                Log.v(LOG_TAG, "ville entry: " + s);
-//            }
-        return resultStrs;
+    private void updateVille() {
+        FetchVillesTask villeTask = new FetchVillesTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String depart = prefs.getString(getString(R.string.pref_depart_key),
+                getString(R.string.pref_depart_default));
+        Toast.makeText(getActivity(), depart, Toast.LENGTH_SHORT).show();
+        villeTask.execute(depart);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateVille();
+    }
+//    public ArrayList<Map<String, String>> getVilleDataFromJson(String villeJsonStr) throws JSONException {
+//
+//        final String OWM_DEPART = "93";
+//        final String OWM_ID= "id";
+//        final String OWM_NOM= "nom";
+//        final String OWM_DISTRICT= "district";
+//        final String OWM_CP= "cp";
+//        JSONObject villeJson = new JSONObject(villeJsonStr);
+//        JSONArray villeArray = villeJson.getJSONArray(OWM_DEPART);
+////            String[] resultStrs = new String[villeArray.length()];
+//        ArrayList<Map<String, String>> resultStrs = new ArrayList<Map<String, String>>();
+//        for(int i = 0; i < villeArray.length(); i++) {
+//            JSONObject laville = villeArray.getJSONObject(i);
+//            HashMap<String, String> map = new HashMap<String, String>();
+//            map.put("id", laville.getString(OWM_ID));
+//            map.put("nom", laville.getString(OWM_NOM));
+//            resultStrs.add(map);
+//        }
+////            for (String s : resultStrs) {
+////                Log.v(LOG_TAG, "ville entry: " + s);
+////            }
+//        return resultStrs;
+//    }
 
     public class FetchVillesTask extends AsyncTask<String, Void, ArrayList<Map<String, String>>> {
 

@@ -7,29 +7,20 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
-    <string name="pref_location_label">Location</string>
+    <string name="pref_cp_label">Code Postal</string>
+    <string name="pref_cp_key" translatable="false">cp</string>
+    <string name="pref_cp_default" translatable="false">93420</string>
 
-    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_location_key" translatable="false">location</string>
-
-    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
-    <string name="pref_location_default" translatable="false">94043</string>
-
-    <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
-    <string name="pref_depart_label">Temperature Units</string>
+    <string name="pref_depart_label">Département</string>
+    <string name="pref_depart_key" translatable="false">depart</string>
+    <string name="pref_depart_default" translatable="false">77</string>
 
     <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
-    <string name="pref_depart_label_initial">Metric</string>
+    <string name="pref_depart_label_93">Seine Saint Denis</string>
+    <string name="pref_depart_label_94">Val de Marne</string>
+    <string name="pref_depart_label_77">Seine et Marne</string>
 
-    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
-    <string name="pref_depart_label_imperial">Imperial</string>
-
-    <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_depart_key" translatable="false">units</string>
-
-    <!-- Value in SharedPreferences for metric temperature unit option [CHAR LIMIT=NONE] -->
-    <string name="pref_depart_initial" translatable="false">metric</string>
-
-    <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
-    <string name="pref_depart_imperial" translatable="false">imperial</string>
+    <string name="pref_depart_77" translatable="false">77</string>
+    <string name="pref_depart_93" translatable="false">93</string>
+    <string name="pref_depart_94" translatable="false">94</string>
 </resources>
