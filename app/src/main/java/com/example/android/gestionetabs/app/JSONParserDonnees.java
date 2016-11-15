@@ -49,9 +49,9 @@ public class JSONParserDonnees {
         }
     }
 
-    public ArrayList<Map<String, String>> getVilleDataFromJson(String villeJsonStr) throws JSONException {
+    public ArrayList<Map<String, String>> getVilleDataFromJson(String villeJsonStr,String depart) throws JSONException {
 
-        final String OWM_DEPART = "93";
+        final String OWM_DEPART = depart;
         final String OWM_ID= "id";
         final String OWM_NOM= "nom";
         final String OWM_DISTRICT= "district";
