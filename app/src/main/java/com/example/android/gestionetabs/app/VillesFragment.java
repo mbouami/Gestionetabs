@@ -38,6 +38,7 @@ public class VillesFragment extends Fragment {
 //    ArrayAdapter<String> mVillesAdapter;
     SimpleAdapter mVillesAdapter;
     ListView listView = null;
+
     public VillesFragment() {
 
     }
@@ -70,29 +71,18 @@ public class VillesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String[] data = {};
-        ArrayList<Map<String, String>> listeVilles = new ArrayList<Map<String, String>>();
-        for(int j = 0; j < data.length; j++) {
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put("id", Integer.toString(j));
-            map.put("nom", data[j]);
-            listeVilles.add(map);
-        }
-
-        mVillesAdapter = new SimpleAdapter(getActivity(),listeVilles, R.layout.list_item_villes, new String[] { "id", "nom" },new int[] { R.id.id, R.id.nom });
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        // Get a reference to the ListView, and attach this adapter to it.
         listView = (ListView) rootView.findViewById(R.id.listview_ville);
-        listView.setAdapter(mVillesAdapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Map<String, String> item = (Map<String, String>) mVillesAdapter.getItem(position);
-                String villecast = item.get("id");
+//                String villecast = item.get("id");
 //                Toast.makeText(getActivity(), villecast, Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(getActivity(), EtabActivity.class)
+//                        .putExtra(Intent.EXTRA_TEXT, villecast);
                 Intent intent = new Intent(getActivity(), EtabActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, villecast);
+                        .putExtra("idville", item.get("id")).putExtra("nomville",item.get("nom"));
                 startActivity(intent);
             }
         });
@@ -104,10 +94,12 @@ public class VillesFragment extends Fragment {
             FetchVillesTask villeTask = new FetchVillesTask();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String depart = prefs.getString(getString(R.string.pref_depart_key),getString(R.string.pref_depart_default));
+//            String depart = prefs.getString(getString(R.string.pref_depart_key),
+//                    getString(R.string.pref_depart_default));
 //            Toast.makeText(getActivity(), depart, Toast.LENGTH_SHORT).show();
             villeTask.execute(depart);
-//            TextView titrevilles = (TextView) findViewById(R.id.titre_ville);
-//            titrevilles.setText(R.string.titre_ville+" iii");
+            TextView titrevilles = (TextView) getActivity().findViewById(R.id.titre_ville);
+            titrevilles.setText(getString(R.string.titre_ville)+" "+depart);
     }
 
     @Override

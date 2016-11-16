@@ -3,9 +3,11 @@
     <string name="hello_world">Bienvenue!</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_refresh" translatable="false">Rafraîchir</string>
+    <string name="action_etab" translatable="false">Etablissements</string>
     <string name="title_activity_etab">Etablissements</string>
     <string name="title_activity_settings">Settings</string>
     <string name="titre_ville">Liste des villes du :</string>
+    <string name="titre_etab">Liste des établissements de :</string>
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
     <string name="pref_cp_label">Code Postal</string>

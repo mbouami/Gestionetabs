@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -65,6 +66,33 @@ public class JSONParserDonnees {
             map.put("id", laville.getString(OWM_ID));
             map.put("nom", laville.getString(OWM_NOM));
             resultStrs.add(map);
+        }
+        return resultStrs;
+    }
+
+    public ArrayList<Map<String, String>> getEtabsDataFromJson(String etabJsonStr,String ville) throws JSONException {
+
+        final String OWM_VILLE = ville;
+        final String OWM_TYPE = "COLLEGE";
+        final String OWM_ID= "id";
+        final String OWM_NOM= "nom";
+        final String OWM_RNE= "rne";
+        JSONObject etabJson = new JSONObject(etabJsonStr);
+        Iterator<String> typesetab = etabJson.keys();
+        ArrayList<Map<String, String>> resultStrs = new ArrayList<Map<String, String>>();
+        while( typesetab.hasNext() ) {
+            String type = (String)typesetab.next();
+//            if ( etabJson.get(type) instanceof JSONObject ) {
+                JSONArray etabArray = etabJson.getJSONArray(type);
+                for(int i = 0; i < etabArray.length(); i++) {
+                    JSONObject etab = etabArray.getJSONObject(i);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put("id", etab.getString(OWM_ID));
+                    map.put("nom", type+" "+etab.getString(OWM_NOM));
+                    map.put("rne", etab.getString(OWM_RNE));
+                    resultStrs.add(map);
+                }
+//            }
         }
         return resultStrs;
     }
