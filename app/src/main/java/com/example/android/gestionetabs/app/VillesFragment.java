@@ -151,7 +151,7 @@ public class VillesFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Map<String, String>> result) {
             if (result != null) {
-                Log.v(LOG_TAG, "ville entry: "+result.size());
+//                Log.v(LOG_TAG, "ville entry: "+result.size());
                 mVillesAdapter = new SimpleAdapter(getActivity(),result, R.layout.list_item_villes, new String[] { "id", "nom" },new int[] { R.id.id, R.id.nom });
                 listView.setAdapter(mVillesAdapter);
             }
