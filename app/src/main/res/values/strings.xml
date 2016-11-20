@@ -6,8 +6,10 @@
     <string name="action_etab" translatable="false">Etablissements</string>
     <string name="title_activity_etab">Etablissements</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="titre_ville">Liste des villes du :</string>
+    <string name="title_activity_detail_etab">Détail établissement</string>
+    <string name="titre_ville">Liste des villes en :</string>
     <string name="titre_etab">Liste des établissements de :</string>
+    <string name="detail_etab">Informations sur établissement :</string>
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
     <string name="pref_cp_label">Code Postal</string>
@@ -16,7 +18,8 @@
 
     <string name="pref_depart_label">Département</string>
     <string name="pref_depart_key" translatable="false">depart</string>
-    <string name="pref_depart_default" translatable="false">77</string>
+    <string name="pref_depart_default" translatable="false">93</string>
+    <string name="pref_depart_label_default" translatable="false">Seine Saint Denis</string>
 
     <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
     <string name="pref_depart_label_93">Seine Saint Denis</string>

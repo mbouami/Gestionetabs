@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.android.gestionetabs.app.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EtabActivity"
+            android:name="com.example.android.gestionetabs.app.EtabActivity"
             android:label="@string/title_activity_etab"
             android:parentActivityName=".MainActivity" >
             <meta-data
@@ -24,13 +24,24 @@
                 android:value="MainActivity" />
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.example.android.gestionetabs.app.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName="com.example.android.gestionetabs.app.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <activity
+            android:name="com.example.android.gestionetabs.app.DetailEtabActivity"
+            android:label="@string/title_activity_detail_etab"
+            android:parentActivityName="com.example.android.gestionetabs.app.EtabActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".EtabActivity" />
+        </activity>
+        <provider
+            android:authorities="com.example.android.gestionetabs.app"
+            android:name=".data.GestionetabProvider" />
     </application>
 
 </manifest>

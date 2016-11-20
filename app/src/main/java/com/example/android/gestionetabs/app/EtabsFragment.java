@@ -10,9 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -50,6 +52,16 @@ public class EtabsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_etab, container, false);
         listViewEtabs = (ListView) rootView.findViewById(R.id.listview_etab);
+        listViewEtabs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Map<String, String> item = (Map<String, String>) mEtabsAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), DetailEtabActivity.class)
+                        .putExtra("idetab", item.get("id")).putExtra("nometab",item.get("nom"));
+                startActivity(intent);
+//                Toast.makeText(getActivity(), item.get("id")+ "-"+item.get("nom"), Toast.LENGTH_SHORT).show();
+            }
+        });
         return rootView;
     }
 

@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.valueOf;
+
 /**
  * Created by mbouami on 12/11/2016.
  */
@@ -94,12 +96,19 @@ public class VillesFragment extends Fragment {
             FetchVillesTask villeTask = new FetchVillesTask();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String depart = prefs.getString(getString(R.string.pref_depart_key),getString(R.string.pref_depart_default));
-//            String depart = prefs.getString(getString(R.string.pref_depart_key),
-//                    getString(R.string.pref_depart_default));
 //            Toast.makeText(getActivity(), depart, Toast.LENGTH_SHORT).show();
             villeTask.execute(depart);
             TextView titrevilles = (TextView) getActivity().findViewById(R.id.titre_ville);
-            titrevilles.setText(getString(R.string.titre_ville)+" "+depart);
+        String message = null;
+            switch (depart){
+                case "93": message=getString(R.string.titre_ville)+" "+getString(R.string.pref_depart_label_93);
+                                                        break;
+                case "77": message=getString(R.string.titre_ville)+" "+getString(R.string.pref_depart_label_77);
+                                                        break;
+                case "94": message=getString(R.string.titre_ville)+" "+getString(R.string.pref_depart_label_94);
+                                                        break;
+            }
+            titrevilles.setText(message);
     }
 
     @Override

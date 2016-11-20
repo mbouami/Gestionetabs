@@ -1,6 +1,7 @@
 package com.example.android.gestionetabs.app;
 
 import android.util.JsonReader;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +14,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,7 +91,7 @@ public class JSONParserDonnees {
                     JSONObject etab = etabArray.getJSONObject(i);
                     HashMap<String, String> map = new HashMap<String, String>();
                     map.put("id", etab.getString(OWM_ID));
-                    map.put("nom", type+" "+etab.getString(OWM_NOM));
+                    map.put("nom", etab.getString(OWM_NOM));
                     map.put("rne", etab.getString(OWM_RNE));
                     resultStrs.add(map);
                 }
@@ -96,4 +99,82 @@ public class JSONParserDonnees {
         }
         return resultStrs;
     }
+
+    public String[] getDetailEtabsDataFromJson(String detailetabJsonStr, String etab) throws JSONException {
+
+        final String OWM_ETAB = etab;
+        final String OWM_ID= "id";
+        final String OWM_NOM= "nom";
+        final String OWM_RNE= "rne";
+        final String OWM_STATUT= "statut";
+        final String OWM_TEL= "tel";
+        final String OWM_FAX= "fax";
+        final String OWM_EMAIL= "email";
+        final String OWM_ADRESSE= "adresse";
+        final String OWM_PERSONNEL= "personnel";
+        final String OWM_ETABLISSEMENT= "etablissement";
+        JSONObject detailetabJson = new JSONObject(detailetabJsonStr);
+        Iterator<String> keyetab = detailetabJson.keys();
+        int taille = detailetabJson.getJSONArray(OWM_PERSONNEL).length() + 6;
+        String[] resultStrs = new String[taille];
+        JSONArray detailpersonnelArray = detailetabJson.getJSONArray(OWM_PERSONNEL);
+        for(int i = 0; i < detailpersonnelArray.length(); i++) {
+            JSONObject detailpersonnel = detailpersonnelArray.getJSONObject(i);
+            resultStrs[i] = detailpersonnel.getString(OWM_STATUT) + " : " + detailpersonnel.getString(OWM_NOM);
+        }
+            for (String s : resultStrs) {
+                Log.v("test", "ville entry: " + s);
+            }
+//        return resultStrs;
+                String[] data = {
+                        "Mon 6/23 - Sunny - 31/17",
+                        "Tue 6/24 - Foggy - 21/8",
+                        "Wed 6/25 - Cloudy - 22/17",
+                        "Thurs 6/26 - Rainy - 18/11",
+                        "Fri 6/27 - Foggy - 21/10",
+                        "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
+                        "Sun 6/29 - Sunny - 20/7"
+                };
+        return data;
+    }
+
+//    public ArrayList<Map<String, String>> getDetailEtabsDataFromJson(String detailetabJsonStr,String etab) throws JSONException {
+//
+//        final String OWM_ETAB = etab;
+//        final String OWM_ID= "id";
+//        final String OWM_NOM= "nom";
+//        final String OWM_RNE= "rne";
+//        final String OWM_STATUT= "statut";
+//        final String OWM_TEL= "tel";
+//        final String OWM_FAX= "fax";
+//        final String OWM_EMAIL= "email";
+//        final String OWM_ADRESSE= "adresse";
+//        JSONObject detailetabJson = new JSONObject(detailetabJsonStr);
+//        Iterator<String> keyetab = detailetabJson.keys();
+//        ArrayList<Map<String, String>> resultStrs = new ArrayList<Map<String, String>>();
+//        while( keyetab.hasNext() ) {
+//            String type = (String)keyetab.next();
+////            if ( etabJson.get(type) instanceof JSONObject ) {
+//            JSONArray detailetabArray = detailetabJson.getJSONArray(type);
+//            for(int i = 0; i < detailetabArray.length(); i++) {
+//                JSONObject detailetab = detailetabArray.getJSONObject(i);
+//                HashMap<String, String> map = new HashMap<String, String>();
+//                if (type=="personnel") {
+//                    map.put("nom", detailetab.getString(OWM_STATUT)+" : "+detailetab.getString(OWM_NOM));
+//                }
+//                if (type=="etablissement") {
+//                    map.put("id", detailetab.getString(OWM_ID));
+//                    map.put("nom", detailetab.getString(OWM_NOM));
+//                    map.put("rne", detailetab.getString(OWM_RNE));
+//                    map.put("tel", detailetab.getString(OWM_TEL));
+//                    map.put("fax", detailetab.getString(OWM_FAX));
+//                    map.put("email", detailetab.getString(OWM_EMAIL));
+//                    map.put("adresse", detailetab.getString(OWM_ADRESSE));
+//                }
+//                resultStrs.add(map);
+//            }
+////            }
+//        }
+//        return resultStrs;
+//    }
 }
