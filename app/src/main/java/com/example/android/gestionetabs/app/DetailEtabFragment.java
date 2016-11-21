@@ -30,6 +30,7 @@ import java.util.Map;
 public class DetailEtabFragment extends Fragment {
 //    ListView listViewDetailEtabs=null;
     private ArrayAdapter<String> mDetailEtabsAdapter = null;
+    private String idville=null;
 
     public DetailEtabFragment() {
     }
@@ -39,6 +40,11 @@ public class DetailEtabFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+        Intent intent = getActivity().getIntent();
+        DetailEtabFragment.FetchDetaiEtabTask detailetabsTask = new DetailEtabFragment.FetchDetaiEtabTask();
+        if (intent != null && intent.hasExtra("idville")) {
+            idville = intent.getStringExtra("idville");
+        }
     }
 
     @Override
@@ -61,15 +67,22 @@ public class DetailEtabFragment extends Fragment {
         super.onStart();
         UpdateDetailEtabs();
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+        Intent intent = new Intent(getActivity(), EtabActivity.class)
+                .putExtra("idville", idville);
+        startActivity(intent);
+    }
+
 
     private void UpdateDetailEtabs() {
         Intent intent = getActivity().getIntent();
         DetailEtabFragment.FetchDetaiEtabTask detailetabsTask = new DetailEtabFragment.FetchDetaiEtabTask();
-        String etabStr = null;
         if (intent != null && intent.hasExtra("idetab") && intent.hasExtra("nometab")) {
-//            TextView titreetabs = (TextView) getActivity().findViewById(R.id.titre_etab);
-//            titreetabs.setText(getString(R.string.titre_etab)+" "+intent.getStringExtra("nomville"));
-            Toast.makeText(getActivity(), intent.getStringExtra("idetab")+ "-"+intent.getStringExtra("nometab"), Toast.LENGTH_SHORT).show();
+            TextView nometabs = (TextView) getActivity().findViewById(R.id.nom_etab);
+            nometabs.setText(getString(R.string.detail_etab)+" "+intent.getStringExtra("nometab"));
+//            Toast.makeText(getActivity(), intent.getStringExtra("idetab")+ "-"+intent.getStringExtra("nometab"), Toast.LENGTH_SHORT).show();
         }
         detailetabsTask.execute(intent.getStringExtra("idetab"));
     }

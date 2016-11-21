@@ -31,6 +31,7 @@ import java.util.Map;
 public class EtabsFragment extends Fragment {
     ListView listViewEtabs=null;
     SimpleAdapter mEtabsAdapter = null;
+    private String idville= null;
 
     public EtabsFragment() {
     }
@@ -40,6 +41,10 @@ public class EtabsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.hasExtra("idville")) {
+            idville = intent.getStringExtra("idville");
+        }
     }
 
     @Override
@@ -57,7 +62,7 @@ public class EtabsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Map<String, String> item = (Map<String, String>) mEtabsAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), DetailEtabActivity.class)
-                        .putExtra("idetab", item.get("id")).putExtra("nometab",item.get("nom"));
+                        .putExtra("idetab", item.get("id")).putExtra("nometab",item.get("nom")).putExtra("idville",idville);
                 startActivity(intent);
 //                Toast.makeText(getActivity(), item.get("id")+ "-"+item.get("nom"), Toast.LENGTH_SHORT).show();
             }
@@ -68,12 +73,12 @@ public class EtabsFragment extends Fragment {
     private void UpdateEtabs() {
         Intent intent = getActivity().getIntent();
         FetchEtabsTask etabsTask = new FetchEtabsTask();
-        String villeStr = null;
         if (intent != null && intent.hasExtra("idville") && intent.hasExtra("nomville")) {
+//            idville = intent.getStringExtra("idville");
             TextView titreetabs = (TextView) getActivity().findViewById(R.id.titre_etab);
             titreetabs.setText(getString(R.string.titre_etab)+" "+intent.getStringExtra("nomville"));
         }
-        etabsTask.execute(intent.getStringExtra("idville"));
+        etabsTask.execute(idville);
     }
 
     @Override
@@ -112,7 +117,7 @@ public class EtabsFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Map<String, String>> result) {
             if (result != null) {
-                Log.v(LOG_TAG, "ville entry: "+result.size());
+//                Log.v(LOG_TAG, "ville entry: "+result.size());
                 mEtabsAdapter = new SimpleAdapter(getActivity(),result, R.layout.list_item_etabs, new String[] { "id", "nom" },new int[] { R.id.id_etab, R.id.nom_etab });
                 listViewEtabs.setAdapter(mEtabsAdapter);
                 mEtabsAdapter = new SimpleAdapter(getActivity(),result, R.layout.list_item_etabs, new String[] { "id", "nom" },new int[] { R.id.id_etab, R.id.nom_etab });

@@ -111,31 +111,40 @@ public class JSONParserDonnees {
         final String OWM_FAX= "fax";
         final String OWM_EMAIL= "email";
         final String OWM_ADRESSE= "adresse";
+        final String OWM_CP= "cp";
+        final String OWM_VILLE= "ville";
         final String OWM_PERSONNEL= "personnel";
         final String OWM_ETABLISSEMENT= "etablissement";
         JSONObject detailetabJson = new JSONObject(detailetabJsonStr);
         Iterator<String> keyetab = detailetabJson.keys();
-        int taille = detailetabJson.getJSONArray(OWM_PERSONNEL).length() + 6;
+        int taille = detailetabJson.getJSONArray(OWM_PERSONNEL).length() + 5;
         String[] resultStrs = new String[taille];
+        JSONArray detailetablissementArray = detailetabJson.getJSONArray(OWM_ETABLISSEMENT);
         JSONArray detailpersonnelArray = detailetabJson.getJSONArray(OWM_PERSONNEL);
+//        resultStrs[detailpersonnelArray.length()] = detailetablissementArray.getJSONObject(0).getString(OWM_NOM);
+        resultStrs[0] = "RNE : "+detailetablissementArray.getJSONObject(0).getString(OWM_RNE);
+        resultStrs[1] = "TEL : "+detailetablissementArray.getJSONObject(0).getString(OWM_TEL);
+        resultStrs[2] = "FAX : "+detailetablissementArray.getJSONObject(0).getString(OWM_FAX);
+        resultStrs[3] = "EMAIL : "+detailetablissementArray.getJSONObject(0).getString(OWM_EMAIL);
+        resultStrs[4] = "ADRESSE : "+detailetablissementArray.getJSONObject(0).getString(OWM_ADRESSE) + " "+ detailetablissementArray.getJSONObject(0).getString(OWM_CP)+" "+detailetablissementArray.getJSONObject(0).getString(OWM_VILLE);
         for(int i = 0; i < detailpersonnelArray.length(); i++) {
             JSONObject detailpersonnel = detailpersonnelArray.getJSONObject(i);
-            resultStrs[i] = detailpersonnel.getString(OWM_STATUT) + " : " + detailpersonnel.getString(OWM_NOM);
+            resultStrs[i+5] = detailpersonnel.getString(OWM_STATUT) + " : " + detailpersonnel.getString(OWM_NOM);
         }
-            for (String s : resultStrs) {
-                Log.v("test", "ville entry: " + s);
-            }
-//        return resultStrs;
-                String[] data = {
-                        "Mon 6/23 - Sunny - 31/17",
-                        "Tue 6/24 - Foggy - 21/8",
-                        "Wed 6/25 - Cloudy - 22/17",
-                        "Thurs 6/26 - Rainy - 18/11",
-                        "Fri 6/27 - Foggy - 21/10",
-                        "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                        "Sun 6/29 - Sunny - 20/7"
-                };
-        return data;
+//        for (String s : resultStrs) {
+//                Log.v("test", "ville entry: " + s);
+//        }
+        return resultStrs;
+//                String[] data = {
+//                        "Mon 6/23 - Sunny - 31/17",
+//                        "Tue 6/24 - Foggy - 21/8",
+//                        "Wed 6/25 - Cloudy - 22/17",
+//                        "Thurs 6/26 - Rainy - 18/11",
+//                        "Fri 6/27 - Foggy - 21/10",
+//                        "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
+//                        "Sun 6/29 - Sunny - 20/7"
+//                };
+//        return data;
     }
 
 //    public ArrayList<Map<String, String>> getDetailEtabsDataFromJson(String detailetabJsonStr,String etab) throws JSONException {
