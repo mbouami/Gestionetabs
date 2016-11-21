@@ -30,6 +30,8 @@ import java.util.Map;
 public class DetailEtabFragment extends Fragment {
 //    ListView listViewDetailEtabs=null;
     private ArrayAdapter<String> mDetailEtabsAdapter = null;
+    private String idville=null;
+    private String nomville= null;
 
     public DetailEtabFragment() {
     }
@@ -39,6 +41,12 @@ public class DetailEtabFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+        Intent intent = getActivity().getIntent();
+        DetailEtabFragment.FetchDetaiEtabTask detailetabsTask = new DetailEtabFragment.FetchDetaiEtabTask();
+        if (intent != null && intent.hasExtra("idville")) {
+            idville = intent.getStringExtra("idville");
+            nomville = intent.getStringExtra("nomville");
+        }
     }
 
     @Override
@@ -62,14 +70,21 @@ public class DetailEtabFragment extends Fragment {
         UpdateDetailEtabs();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Intent intent = new Intent(getActivity(), EtabActivity.class)
+                .putExtra("idville", idville).putExtra("nomville",nomville);
+        startActivity(intent);
+    }
+
     private void UpdateDetailEtabs() {
         Intent intent = getActivity().getIntent();
         DetailEtabFragment.FetchDetaiEtabTask detailetabsTask = new DetailEtabFragment.FetchDetaiEtabTask();
-        String etabStr = null;
         if (intent != null && intent.hasExtra("idetab") && intent.hasExtra("nometab")) {
-//            TextView titreetabs = (TextView) getActivity().findViewById(R.id.titre_etab);
-//            titreetabs.setText(getString(R.string.titre_etab)+" "+intent.getStringExtra("nomville"));
-            Toast.makeText(getActivity(), intent.getStringExtra("idetab")+ "-"+intent.getStringExtra("nometab"), Toast.LENGTH_SHORT).show();
+            TextView nometabs = (TextView) getActivity().findViewById(R.id.nom_etab);
+            nometabs.setText(getString(R.string.detail_etab)+" "+intent.getStringExtra("nometab"));
+//            Toast.makeText(getActivity(), intent.getStringExtra("idetab")+ "-"+intent.getStringExtra("nometab"), Toast.LENGTH_SHORT).show();
         }
         detailetabsTask.execute(intent.getStringExtra("idetab"));
     }
@@ -104,15 +119,6 @@ public class DetailEtabFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] result) {
             if (result != null) {
-//                String[] data = {
-//                        "Mon 6/23 - Sunny - 31/17",
-//                        "Tue 6/24 - Foggy - 21/8",
-//                        "Wed 6/25 - Cloudy - 22/17",
-//                        "Thurs 6/26 - Rainy - 18/11",
-//                        "Fri 6/27 - Foggy - 21/10",
-//                        "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-//                        "Sun 6/29 - Sunny - 20/7"
-//                };
                 List<String> resultStrs = new ArrayList<String>(Arrays.asList(result));
                 mDetailEtabsAdapter.clear();
                 for(String detailetabStr : resultStrs) {
