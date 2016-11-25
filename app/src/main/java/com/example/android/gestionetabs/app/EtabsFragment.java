@@ -1,9 +1,13 @@
 package com.example.android.gestionetabs.app;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,7 +84,7 @@ public class EtabsFragment extends Fragment {
         FetchEtabsTask etabsTask = new FetchEtabsTask();
         if (intent != null && intent.hasExtra("idville") && intent.hasExtra("nomville")) {
             TextView titreetabs = (TextView) getActivity().findViewById(R.id.titre_etab);
-            titreetabs.setText(getString(R.string.titre_etab)+" "+intent.getStringExtra("nomville"));
+            titreetabs.setText(Utility.formatListeEtabs(getContext(),intent.getStringExtra("nomville")));
         }
         etabsTask.execute(idville);
     }
@@ -94,6 +98,17 @@ public class EtabsFragment extends Fragment {
     public class FetchEtabsTask extends AsyncTask<String, Void, ArrayList<Map<String, String>>> {
         private final String LOG_TAG = EtabsFragment.FetchEtabsTask.class.getSimpleName();
         private JSONParserDonnees listeetabsparville = new JSONParserDonnees();
+        ProgressDialog pDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Chargement des données en cours. Merci de patienter...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
         @Override
         protected ArrayList<Map<String, String>> doInBackground(String... params) {
             if (params.length == 0) {
@@ -120,6 +135,7 @@ public class EtabsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Map<String, String>> result) {
+            pDialog.dismiss();
             if (result != null) {
                 Log.v(LOG_TAG, "ville entry: "+result.size());
                 mEtabsAdapter = new SimpleAdapter(getActivity(),result, R.layout.list_item_etabs, new String[] { "id", "nom" },new int[] { R.id.id_etab, R.id.nom_etab });

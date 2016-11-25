@@ -20,6 +20,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.example.android.gestionetabs.app.data.VillesContract.VillesEntry;
+
 /**
  * Created by BOUAMI on 14/11/2016.
  */

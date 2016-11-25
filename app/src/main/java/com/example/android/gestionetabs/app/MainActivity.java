@@ -8,15 +8,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String GESTIONETAB_TAG = "GCRETEIL";
+    private String mdepart;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mdepart = Utility.getPreferredDepart(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new VillesFragment())
+                    .add(R.id.container, new VillesFragment(), GESTIONETAB_TAG)
                     .commit();
         }
     }
@@ -42,5 +46,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String departement = Utility.getPreferredDepart( this );
+
+        // update the location in our second pane using the fragment manager
+        if (departement != null && !departement.equals(mdepart)) {
+            VillesFragment ff = (VillesFragment)getSupportFragmentManager().findFragmentByTag(GESTIONETAB_TAG);
+            if ( null != ff ) {
+                ff.onDepartementChanged();
+            }
+            mdepart = departement;
+        }
     }
 }

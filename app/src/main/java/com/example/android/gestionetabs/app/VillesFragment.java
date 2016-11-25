@@ -1,11 +1,15 @@
 package com.example.android.gestionetabs.app;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,16 +21,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.json.JSONArray;
+import com.example.android.gestionetabs.app.data.VillesContract;
+
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.String.valueOf;
@@ -40,6 +42,14 @@ public class VillesFragment extends Fragment {
 //    ArrayAdapter<String> mVillesAdapter;
     SimpleAdapter mVillesAdapter;
     ListView listView = null;
+
+    private static final int VILLE_LOADER = 0;
+    private static final String[] VILLES_COLUMNS = {
+            VillesContract.VillesEntry.COLUMN_VILLE_ID,
+            VillesContract.VillesEntry.COLUMN_VILLE_NOM
+    };
+    static final int COL_VILLE_ID = 0;
+    static final int COL_VILLE_NOM = 1;
 
     public VillesFragment() {
 
@@ -79,10 +89,6 @@ public class VillesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Map<String, String> item = (Map<String, String>) mVillesAdapter.getItem(position);
-//                String villecast = item.get("id");
-//                Toast.makeText(getActivity(), villecast, Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(getActivity(), EtabActivity.class)
-//                        .putExtra(Intent.EXTRA_TEXT, villecast);
                 Intent intent = new Intent(getActivity(), EtabActivity.class)
                         .putExtra("idville", item.get("id")).putExtra("nomville",item.get("nom"));
                 startActivity(intent);
@@ -92,23 +98,33 @@ public class VillesFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    void onDepartementChanged( ) {
+        updateVille();
+    }
+
     private void updateVille() {
             FetchVillesTask villeTask = new FetchVillesTask();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String depart = prefs.getString(getString(R.string.pref_depart_key),getString(R.string.pref_depart_default));
+//            String depart = prefs.getString(getString(R.string.pref_depart_key),getString(R.string.pref_depart_default));
+            String depart = Utility.getPreferredDepart(getContext());
 //            Toast.makeText(getActivity(), depart, Toast.LENGTH_SHORT).show();
             villeTask.execute(depart);
             TextView titrevilles = (TextView) getActivity().findViewById(R.id.titre_ville);
         String message = null;
             switch (depart){
-                case "93": message=getString(R.string.titre_ville)+" "+getString(R.string.pref_depart_label_93);
+                case "93": message=getString(R.string.pref_depart_label_93);
                                                         break;
-                case "77": message=getString(R.string.titre_ville)+" "+getString(R.string.pref_depart_label_77);
+                case "77": message=getString(R.string.pref_depart_label_77);
                                                         break;
-                case "94": message=getString(R.string.titre_ville)+" "+getString(R.string.pref_depart_label_94);
+                case "94": message=getString(R.string.pref_depart_label_94);
                                                         break;
             }
-            titrevilles.setText(message);
+            titrevilles.setText(Utility.formatListeVilles(getContext(),message));
     }
 
     @Override
@@ -121,7 +137,17 @@ public class VillesFragment extends Fragment {
 
         private final String LOG_TAG = FetchVillesTask.class.getSimpleName();
         private JSONParserDonnees listevillespardepart = new JSONParserDonnees();
+        ProgressDialog pDialog;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Chargement des données en cours. Merci de patienter...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
         @Override
         protected ArrayList<Map<String, String>> doInBackground(String... params) {
             if (params.length == 0) {
@@ -150,6 +176,7 @@ public class VillesFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(ArrayList<Map<String, String>> result) {
+            pDialog.dismiss();
             if (result != null) {
 //                Log.v(LOG_TAG, "ville entry: "+result.size());
                 mVillesAdapter = new SimpleAdapter(getActivity(),result, R.layout.list_item_villes, new String[] { "id", "nom" },new int[] { R.id.id, R.id.nom });
